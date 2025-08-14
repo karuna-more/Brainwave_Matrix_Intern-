@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LETSLEARN- Learn & Upskill</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script>
+        function subscribe() {
+            const email = document.getElementById("email").value;
+            if (email && email.includes("@")) {
+                alert(`Thanks for subscribing, ${email}!`);
+                document.getElementById("email").value = "";
+            } else {
+                alert("Please enter a valid email address.");
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div class="max-w-6xl mx-auto flex justify-between items-center  ">
+        <h1 class="text-2xl font-bold">LETSLEARN</h1>
+        <nav class="space-x-6">
+            <a href="#features" class="hover:underline">Features</a>
+            <a href="#about" class="hover:underline">About</a>
+            <a href="#contact" class="hover:underline">Contact</a>
+        </nav>
+    </div>
+    <section class="bg-blue-100 py-20 text-center">
+        <div class="max-w-4xl mx-auto px-4">
+            <h2 class="text-4xl md:text-5xl font-bold mb-4">Upskill With LETSLEARN</h2>
+            <p class="text-lg md:text-xl mb-6">Explore free and premium courses in tech, business, and design.</p>
+            <a href="#features" class="bg-blue-600 text-white px-6 py-3 rounded shadow hover:bg-blue-700">Get
+                Started</a>
+        </div>
+    </section>
+
+    <section id="features" class="py-16 bg-white">
+        <div class="max-w-6xl mx-auto px-4">
+            <h3 class="text-3xl font-semibold mb-10 text-center">Why Choose Us?</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="p-6 border rounded-lg shadow">
+                    <h4 class="text-xl font-bold mb-2">Interactive Courses</h4>
+                    <p>Learn with videos, quizzes, and projects to test your skills live.</p>
+                </div>
+                <div class="p-6 border rounded-lg shadow">
+                    <h4 class="text-xl font-bold mb-2">Expert Mentors</h4>
+                    <p>Get guidance from top industry professionals and educators.</p>
+                </div>
+                <div class="p-6 border rounded-lg shadow">
+                    <h4 class="text-xl font-bold mb-2">Certifications</h4>
+                    <p>Earn certificates that boost your resume and job chances.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="py-16 bg-gray-100">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h3 class="text-3xl font-semibold mb-6">About LETSLEARN</h3>
+            <p>We are a platform that empowers learners worldwide to grow their careers by gaining
+                practical skills in technology, business, and more. With curated content and flexible learning options,
+                we make education accessible to everyone.</p>
+        </div>
+    </section>
+
+    <section class="bg-blue-600 text-white py-12">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h3 class="text-2xl font-semibold mb-2">Subscribe to Our Newsletter</h3>
+            <p class="mb-4">Stay updated with new courses and job alerts</p>
+            <div class="flex justify-center">
+                <input id="email" type="email" placeholder="Your email address" class="p-3 rounded-l w-64 text-black">
+                <button onclick="subscribe()"
+                    class="bg-white text-blue-600 px-4 py-3 rounded-r font-semibold hover:bg-gray-100">Subscribe</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="py-16 bg-white">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h3 class="text-3xl font-semibold mb-4">Contact Us</h3>
+            <p class="mb-2">📧 Email: support@letslearn.com</p>
+            <p>📍 Location: Pune, India</p>
+        </div>
+    </section>
+
+    <footer class="bg-gray-900 text-white text-center py-6">
+        <p>&copy; 2025 LETSLEARN. All rights reserved.</p>
+    </footer>5
+
+</body>
+
+</html>
