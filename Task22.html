@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SmartCart - Interactive Shop</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #111;
+            color: #fff;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .search-bar {
+            flex: 1;
+            margin: 0 1rem;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 0.5rem;
+            border-radius: 4px;
+            border: none;
+        }
+
+        .cart {
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 2rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: scale(1.03);
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .product-card .info {
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .btn {
+            background-color: #28a745;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+
+        .btn:hover {
+            background-color: #218838;
+        }
+
+        #cart-summary {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            background-color: white;
+            border: 1px solid #ddd;
+            padding: 1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: none;
+            z-index: 1000;
+            width: 300px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        #cart-summary h3 {
+            margin-top: 0;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .cart-item span {
+            font-size: 0.9rem;
+        }
+
+        .remove-btn {
+            background: red;
+            color: white;
+            border: none;
+            padding: 2px 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            border-radius: 3px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: #222;
+            color: white;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .search-bar {
+                width: 100%;
+                margin-top: 0.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo">SmartCart</div>
+        <div class="search-bar">
+            <input type="text" id="search" placeholder="Search products..." oninput="filterProducts()" />
+        </div>
+        <div class="cart" onclick="toggleCart()">🛒 Cart (<span id="cart-count">0</span>)</div>
+    </header>
+
+    <div class="container" id="product-list"></div>
+
+    <div id="cart-summary">
+        <h3>Your Cart</h3>
+        <div id="cart-items"></div>
+        <hr />
+        <p><strong>Total:</strong> <span id="total-price">₹0.00</span></p>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 SmartCart. Built with ❤️ using HTML, CSS & JS.</p>
+    </footer>
+
+    <script>
+        const products = [
+            { id: 1, name: "Wireless Headphones", price: 4999.00, image: "https://www.bing.com/th/id/OIP.hsGsi6xD6jN_f-naXIen_QHaHa?w=207&h=211&c=8&rs=1&qlt=90&o=6&dpr=1.5&pid=3.1&rm=2" },
+            { id: 2, name: "Smart Watch", price: 8999.00, image: "https://www.bing.com/th/id/OIP.8Js70CPlVBwuwX8HTrJBfAHaG6?w=213&h=211&c=8&rs=1&qlt=90&o=6&dpr=1.5&pid=3.1&rm=2" },
+            { id: 3, name: "Gaming Mouse", price: 2999.00, image: "https://th.bing.com/th/id/OIP.Quwt8yfROEIEzIGXW6ecywHaHa?w=202&h=202&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3" },
+            { id: 4, name: "Bluetooth Speaker", price: 3999.00, image: "https://th.bing.com/th/id/OIP.lGEHi0B-Xm4Q8XtIDquGbgHaHa?w=178&h=180&c=7&r=0&o=5&dpr=1.5&pid=1.7" },
+            { id: 5, name: "Laptop Stand", price: 2499.00, image: "https://www.bing.com/th/id/OIP.TzVPHvhjm08tHfaYg6AQkQHaGW?w=223&h=211&c=8&rs=1&qlt=90&o=6&dpr=1.5&pid=3.1&rm=2" },
+            { id: 6, name: "USB-C Hub", price: 1999.00, image: "https://www.bing.com/th/id/OIP.cNqPbuhLxeQoLUwtkn7W8gHaJQ?w=160&h=211&c=8&rs=1&qlt=90&o=6&dpr=1.5&pid=3.1&rm=2" }
+        ];
+
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        function renderProducts() {
+            const container = document.getElementById("product-list");
+            container.innerHTML = '';
+            products.forEach(product => {
+                const card = document.createElement("div");
+                card.className = "product-card";
+                card.innerHTML = `
+          <img src="${product.image}" alt="${product.name}" />
+          <div class="info">
+            <h3>${product.name}</h3>
+            <p>${product.price.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })}</p>
+            <button class="btn" onclick="addToCart(${product.id})">Add to Cart</button>
+          </div>
+        `;
+                container.appendChild(card);
+            });
+        }
+
+        function addToCart(productId) {
+            const item = cart.find(i => i.id === productId);
+            if (item) {
+                item.qty++;
+            } else {
+                const product = products.find(p => p.id === productId);
+                cart.push({ ...product, qty: 1 });
+            }
+            saveCart();
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            saveCart();
+        }
+
+        function saveCart() {
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartDisplay();
+        }
+
+        function updateCartDisplay() {
+            const cartItems = document.getElementById("cart-items");
+            const cartCount = document.getElementById("cart-count");
+            const totalPrice = document.getElementById("total-price");
+
+            cartItems.innerHTML = '';
+            let total = 0;
+            cart.forEach(item => {
+                const div = document.createElement("div");
+                div.className = "cart-item";
+                div.innerHTML = `
+          <span>${item.name} x ${item.qty}</span>
+          <span>${(item.price * item.qty).toLocaleString('en-IN', { style: 'currency', currency: 'INR' })} 
+            <button class="remove-btn" onclick="removeFromCart(${item.id})">X</button>
+          </span>
+        `;
+                cartItems.appendChild(div);
+                total += item.price * item.qty;
+            });
+
+            cartCount.textContent = cart.reduce((sum, item) => sum + item.qty, 0);
+            totalPrice.textContent = total.toLocaleString('en-IN', { style: 'currency', currency: 'INR' });
+        }
+
+        function toggleCart() {
+            const cartSummary = document.getElementById("cart-summary");
+            cartSummary.style.display = cartSummary.style.display === "block" ? "none" : "block";
+        }
+
+        function filterProducts() {
+            const search = document.getElementById('search').value.toLowerCase();
+            const container = document.getElementById("product-list");
+            container.innerHTML = '';
+
+            products
+                .filter(product => product.name.toLowerCase().includes(search))
+                .forEach(product => {
+                    const card = document.createElement("div");
+                    card.className = "product-card";
+                    card.innerHTML = `
+            <img src="${product.image}" alt="${product.name}" />
+            <div class="info">
+              <h3>${product.name}</h3>
+              <p>${product.price.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })}</p>
+              <button class="btn" onclick="addToCart(${product.id})">Add to Cart</button>
+            </div>
+          `;
+                    container.appendChild(card);
+                });
+        }
+
+        window.onload = () => {
+            renderProducts();
+            updateCartDisplay();
+        };
+    </script>
+</body>
+
+</html>
